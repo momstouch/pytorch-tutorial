@@ -17,13 +17,13 @@ if device == "cuda":
     torch.cuda.manual_seed_all(777)
 
 mnist_train = torchvision.datasets.MNIST(
-        root='MNIST_data/',
+        root='../MNIST_data/',
         train=True,
         transform=transforms.ToTensor(),
         download=True)
 
 mnist_test = torchvision.datasets.MNIST(
-        root='MNIST_data/',
+        root='../MNIST_data/',
         train=False,
         transform=transforms.ToTensor(),
         download=True)
