@@ -96,16 +96,16 @@ def evaluate(model, val_iter):
     corrects, total_loss = 0, 0
 
     for batch in val_iter:
-        x, y = bathc.text.to(device), batch.label.to(device)
+        x, y = batch.text.to(device), batch.label.to(device)
         y.data.sub_(1) # making label 0 or 1
 
-        logiat = model(x)
+        logit = model(x)
         loss = F.cross_entropy(logit, y, reduction = "sum")
         total_loss += loss.item()
         corrects += (logit.max(1)[1].view(y.size()).data == y.data).sum()
 
     size = len(val_iter.dataset)
-    avg_loss = total_ss / size
+    avg_loss = total_loss / size
     avg_accuracy = 100.0 * corrects / size
     return avg_loss, avg_accuracy
 
@@ -117,11 +117,11 @@ for e in range(1, EPOCHS + 1):
     train(model, optimizer, train_iter)
     val_loss, val_accuracy = evaluate(model, val_iter)
 
-    print("[epoch: $d] validation err: %5.2f, validatiaon accuracy: %5.2f"
+    print("[epoch: %d] validation err: %5.2f, validatiaon accuracy: %5.2f"
             % (e, val_loss, val_accuracy))
 
-    if not best_val_loss or val_loss < best_val_loss:
-        if os.path.isdir("snapshot"):
+    if best_val_loss is None or val_loss < best_val_loss:
+        if not os.path.isdir("snapshot"):
             os.makedirs("snapshot")
         torch.save(model.state_dict(), "./snapshot/imdb_classification.pt")
         best_val_loss = val_loss
